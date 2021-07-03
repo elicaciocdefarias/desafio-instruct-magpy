@@ -24,12 +24,12 @@ export default () => {
     session.delete("/projects/titan/");  // <- limpa o ambiente antes do teste
 
     const titanData = {
-        name: "titan",
-        packages: [
-            {name: "django-rest-swagger"},
-            {name: "Django", version: "2.2.24"},
-            {name: "psycopg2-binary", version: "2.9.1"}
-        ]
+      name: "titan",
+      packages: [
+        { name: "django-rest-swagger" },
+        { name: "Django", version: "2.2.24" },
+        { name: "psycopg2-binary", version: "2.9.1" }
+      ]
     };
     const titan = session.post("/projects/", JSON.stringify(titanData));
 
@@ -53,17 +53,61 @@ export default () => {
       },
     });
   });
-  
+  group("Cria dois projetos com o mesmo nome", () => {
+    session.delete("/projects/cronos/");
+
+    const CronosData = {
+      name: "cronos",
+      packages: [
+        { name: "Django" }
+      ]
+    };
+
+    session.post("/projects/", JSON.stringify(CronosData));
+    const cronos = session.post("/projects/", JSON.stringify(CronosData));
+
+    check(cronos, {
+      "Tentativa resulta em erro BAD REQUEST": (r) => r.status === 400,
+    });
+
+    check(cronos, {
+      "Apresenta mensagem de erro": (r) => {
+        const expected = '{"name":["project with this name already exists."]}';
+        return r.body === expected
+      },
+    });
+  });
+
+  group("Cria projeto sem declarar a variavel packages", () => {
+    session.delete("/projects/tanos/");
+
+    const TanosData = {
+      name: "tanos"
+    };
+
+    const tanos = session.post("/projects/", JSON.stringify(TanosData));
+    check(tanos, {
+      "Tentativa resulta em erro BAD REQUEST": (r) => r.status === 400,
+    });
+
+    check(tanos, {
+      "Apresenta mensagem de erro": (r) => {
+        const expected = '{"packages":["This field is required."]}';
+        return r.body === expected;
+      },
+    });
+  });
+
   group("Cria projeto com pacote inexistente", () => {
     session.delete("/projects/machine-head/");  // <- limpa o ambiente antes do teste
 
     const mhdData = {
-        name: "machine-head",
-        packages: [
-            {name: "keras"},
-            {name: "matplotlib"},
-            {name: "pypypypypypypypypypypypypy"}
-        ]
+      name: "machine-head",
+      packages: [
+        { name: "keras" },
+        { name: "matplotlib" },
+        { name: "pypypypypypypypypypypypypy" }
+      ]
     };
     const mh = session.post("/projects/", JSON.stringify(mhdData));
 
@@ -74,7 +118,33 @@ export default () => {
     check(mh, {
       "Apresenta mensagem de erro": (r) => {
         const data = responseToJson(r);
-        const expected = {"error": "One or more packages doesn't exist"};
+        const expected = { "error": "One or more packages doesn't exist" };
+        return shallowObjectCompare(expected, data);
+      },
+    });
+  });
+
+  group("Cria projeto com versão de pacote inexistente", () => {
+    session.delete("/projects/prometheus/");
+
+    const prometheusData = {
+      name: "prometheus",
+      packages: [
+        { name: "django-rest-swagger" },
+        { name: "Django", version: "33.33.33" },
+        { name: "psycopg2-binary", version: "2.9.1" }
+      ]
+    };
+    const prometheus = session.post("/projects/", JSON.stringify(prometheusData));
+
+    check(prometheus, {
+      "Tentativa resulta em error BAD REQUEST": (r) => r.status === 400,
+    });
+
+    check(prometheus, {
+      "Apresenta mensagem de erro": (r) => {
+        const data = responseToJson(r);
+        const expected = { "error": "One or more packages doesn't exist" };
         return shallowObjectCompare(expected, data);
       },
     });

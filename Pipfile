@@ -13,6 +13,12 @@ whitenoise = "~=5.2"
 django-heroku = "~=0.3"
 
 [dev-packages]
+black = "==21.6b0"
+isort = "~=5.9"
+flake8 = "~=3.9"
+pytest = "*"
+pytest-django = "*"
+pytest-mock = "*"
 
 [requires]
 python_version = "3.9"

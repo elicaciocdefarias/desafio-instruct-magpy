@@ -1,0 +1,164 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /api/projects/:
+    get:
+      operationId: listProjects
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+          description: ''
+      tags:
+      - api
+    post:
+      operationId: createProject
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Project'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+      tags:
+      - api
+  /api/projects/{name}/:
+    get:
+      operationId: retrieveProject
+      description: ''
+      parameters:
+      - name: name
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+      tags:
+      - api
+    put:
+      operationId: updateProject
+      description: ''
+      parameters:
+      - name: name
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Project'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+      tags:
+      - api
+    patch:
+      operationId: partialUpdateProject
+      description: ''
+      parameters:
+      - name: name
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Project'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Project'
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+      tags:
+      - api
+    delete:
+      operationId: destroyProject
+      description: ''
+      parameters:
+      - name: name
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '204':
+          description: ''
+      tags:
+      - api
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 255
+        packages:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                maxLength: 255
+              version:
+                type: string
+                maxLength: 255
+            required:
+            - name
+      required:
+      - name
+      - packages

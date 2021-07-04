@@ -14,15 +14,35 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path, re_path
+from django.urls import include, path
 from rest_framework import routers
+from django.views.generic import TemplateView
+from rest_framework.schemas import get_schema_view
+
 
 from api import views
 
 router = routers.SimpleRouter()
-router.register(r'projects', views.ProjectViewSet)
+router.register(r"projects", views.ProjectViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include(router.urls)),
+    path("admin/", admin.site.urls),
+    path("api/", include(router.urls)),
+    path(
+        "openapi-schema",
+        get_schema_view(
+            title="MagPy",
+            description="Garantir que os projetos estão usando as últimas versões disponíves dos pacotes.",
+            version="1.0.0",
+        ),
+        name="openapi-schema",
+    ),
+    path(
+        "swagger-ui/",
+        TemplateView.as_view(
+            template_name="api/swagger-ui.html",
+            extra_context={"schema_url": "openapi-schema"},
+        ),
+        name="swagger-ui",
+    ),
 ]

@@ -23,40 +23,40 @@ Click [aqui](https://magpy-elicacio.herokuapp.com/swagger-ui/) para acessar.
 ## Como instalar localmente
 
 Clone o projeto
-```
+```bash
 git clone https://github.com/elicaciocdefarias/teste-python-jr-remoto-2021-06.git
 ```
 
 Acesse o projeto
-```
+```bash
 cd teste-python-jr-remoto-2021-06
 ```
 
 Crie o arquivo .env na raiz do projeto e adicione as duas variáveis abaixo
-```
+```.env
 SECRET_KEY=altere_esse_valor
 DEBUG=True
 ```
 
-Instale todas as dependências para o seu projeto
-```
+Instale todas as dependências, incluindo as de desenvolvimento
+```bash
 pipenv install --dev
 ```
 
 Rode as migrações
-```
+```bash
 pipenv run python manage.py migrate
 ```
 
 Para rodar os testes de unidade
-```
+```bash
 pipenv run pytest -vv
 ```
 
 Para rodar os testes de integração
 > **Observações:**
 >
-> Antes de prosseguir você precisa instalar [k6](https://k6.io), click [aqui](https://k6.io/docs/getting-started/installation/), para acessar o guia de instalação.
+> Antes de prosseguir você precisa instalar [k6](https://k6.io), click [aqui](https://k6.io/docs/getting-started/installation/) para acessar o guia de instalação.
 
 Abra duas janelas do terminal.
 > **Observações:**
@@ -64,17 +64,124 @@ Abra duas janelas do terminal.
 > Se estiver usando [tilix](https://gnunn1.github.io/tilix-web/) ou [tmux](https://github.com/tmux/tmux/wiki), basta dividir a janela em dois paineis.
 
 Em uma janela ou painel, rode o comando abaixo para subir a aplicação.
-```
+```bash
 pipenv run python manage.py runserver
 ```
 
-Na outra, rode.
-```
+Na outra janela ou painel, rode.
+```bash
 k6 run -e API_BASE='http://127.0.0.1:8000/' tests-open.js
+```
+
+> **Observações:**
+>
+> Rode o comando abaixo para testar a aplicação em produção.
+```bash
+k6 run -e API_BASE='https://magpy-elicacio.herokuapp.com' tests-open.js
 ```
 
 ## Mode de usar
 
 > **Observações**
 >
-> Os exemplos abaixo foram realizados usando [HTTPie](https://httpie.io/) 
+> Os exemplos abaixo foram realizados usando [HTTPie](https://httpie.io/).
+
+### Principais operações
+
+#### Criar
+```bash
+http POST 'http://127.0.0.1:8000/api/projects/' name='borg' packages:='[]' 
+```
+
+Retorno com sucesso.
+```
+{
+    "name": "borg",
+    "packages": []
+}
+```
+
+Retorno com falha.
+```
+{
+    "name": [
+        "project with this name already exists."
+    ]
+}
+```
+
+#### Listar todos.
+```bash
+http GET 'http://127.0.0.1:8000/api/projects/'
+```
+
+Retorno com resultados.
+```
+[
+    {
+        "name": "borg",
+        "packages": []
+    }
+]
+
+```
+Retorno sem resultados.
+```
+[]
+```
+
+>**Observações**
+>
+>As operações abaixo são realizadas usando o nome do projeto.
+>
+>Está sendo usado o nome do projeto criado [aqui](####Criar)
+
+#### Listar um.
+```bash
+http GET 'http://127.0.0.1:8000/api/projects/borg/'
+```
+Retorno com sucesso.
+```
+{
+    "name": "borg",
+    "packages": []
+}
+```
+Retorno com falha.
+```
+{
+    "detail": "Not found."
+}
+```
+#### Atualizar um.
+```bash
+http PUT 'http://127.0.0.1:8000/api/projects/borg/'
+```
+Retorno com sucesso.
+```
+{
+    "name": "borg",
+    "packages": []
+}
+```
+Retorno com falha.
+```
+{
+    "detail": "Not found."
+}
+```
+#### Deletar um.
+```bash
+http DELETE 'http://127.0.0.1:8000/api/projects/borg/'
+```
+
+Retorno com sucesso.
+```
+
+```
+Retorno com falha.
+```
+{
+    "detail": "Not found."
+}
+```

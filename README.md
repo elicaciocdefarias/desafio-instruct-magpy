@@ -33,7 +33,7 @@ cd teste-python-jr-remoto-2021-06
 ```
 
 Crie o arquivo .env na raiz do projeto e adicione as duas variáveis abaixo
-```.env
+```env
 SECRET_KEY=altere_esse_valor
 DEBUG=True
 ```
@@ -94,7 +94,7 @@ http POST 'http://127.0.0.1:8000/api/projects/' name='borg' packages:='[]'
 ```
 
 Retorno com sucesso.
-```
+```json
 {
     "name": "borg",
     "packages": []
@@ -102,7 +102,7 @@ Retorno com sucesso.
 ```
 
 Retorno com falha.
-```
+```json
 {
     "name": [
         "project with this name already exists."
@@ -110,23 +110,57 @@ Retorno com falha.
 }
 ```
 
+#### Criar com pacotes
+```bash
+http POST 'http://127.0.0.1:8000/api/projects/' name='dinos' packages:='[{"Django": "3.2.5"}]' 
+```
+
+Retorno com sucesso.
+```json
+{
+    "name": "dinos",
+    "packages": [
+        {
+            "name": "Django",
+            "version": "3.2.5"
+        }
+    ]
+}
+```
+
+Retorno com falha.
+```json
+{
+    "error": "One or more packages doesn't exist"
+}
+```
+
+
 #### Listar todos.
 ```bash
 http GET 'http://127.0.0.1:8000/api/projects/'
 ```
 
 Retorno com resultados.
-```
+```json
 [
     {
         "name": "borg",
         "packages": []
+    },
+    {
+        "name": "dinos",
+        "packages": [
+            {
+                "name": "Django",
+                "version": "3.2.5"
+            }
+        ]
     }
 ]
-
 ```
 Retorno sem resultados.
-```
+```json
 []
 ```
 
@@ -141,14 +175,14 @@ Retorno sem resultados.
 http GET 'http://127.0.0.1:8000/api/projects/borg/'
 ```
 Retorno com sucesso.
-```
+```json
 {
     "name": "borg",
     "packages": []
 }
 ```
 Retorno com falha.
-```
+```json
 {
     "detail": "Not found."
 }
@@ -158,14 +192,14 @@ Retorno com falha.
 http PUT 'http://127.0.0.1:8000/api/projects/borg/'
 ```
 Retorno com sucesso.
-```
+```json
 {
     "name": "borg",
     "packages": []
 }
 ```
 Retorno com falha.
-```
+```json
 {
     "detail": "Not found."
 }
@@ -176,11 +210,11 @@ http DELETE 'http://127.0.0.1:8000/api/projects/borg/'
 ```
 
 Retorno com sucesso.
-```
+```json
 
 ```
 Retorno com falha.
-```
+```json
 {
     "detail": "Not found."
 }

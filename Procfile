@@ -1,3 +1,3 @@
 release: python manage.py migrate
-tests: pytest
+tests: pytest -vv
 web: gunicorn magpy.wsgi

@@ -65,6 +65,11 @@ class ProjectSerializer(serializers.ModelSerializer):
         updated_packages = package_updater.update()
         instance.name = validated_data.get("name", instance.name)
         for package in updated_packages:
-            PackageRelease.objects.update_or_create(project=instance, **package)
+            try:
+                p = PackageRelease.objects.get(project=instance, name=package["name"])
+                p.version = package["version"]
+            except PackageRelease.DoesNotExist:
+                p = PackageRelease(project=instance, **package)
+            p.save()
         instance.save()
         return instance

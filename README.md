@@ -77,7 +77,7 @@ k6 run -e API_BASE='http://127.0.0.1:8000/' tests-open.js
 >
 > Rode o comando abaixo para testar a aplicação em produção.
 ```bash
-k6 run -e API_BASE='https://magpy-elicacio.herokuapp.com' tests-open.js
+k6 run -e API_BASE='https://magpy-elicacio.herokuapp.com/' tests-open.js
 ```
 
 ## Mode de usar
@@ -86,7 +86,7 @@ k6 run -e API_BASE='https://magpy-elicacio.herokuapp.com' tests-open.js
 >
 > Os exemplos abaixo foram realizados usando [HTTPie](https://httpie.io/).
 >
-> Para testar a API em produção basta troca **http://127.0.0.1:8000/api/projects/** por **https://magpy-elicacio.herokuapp.com**
+> Para testar a API em produção basta troca **http://127.0.0.1:8000/api/projects/** por **https://magpy-elicacio.herokuapp.com/api/projects/**
 
 ### Principais operações
 #### Criar

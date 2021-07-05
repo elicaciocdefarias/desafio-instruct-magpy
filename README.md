@@ -85,28 +85,19 @@ k6 run -e API_BASE='https://magpy-elicacio.herokuapp.com' tests-open.js
 > **Observações**
 >
 > Os exemplos abaixo foram realizados usando [HTTPie](https://httpie.io/).
+>
+> Para testar a API em produção basta troca **http://127.0.0.1:8000/api/projects/** por **https://magpy-elicacio.herokuapp.com**
 
 ### Principais operações
-
 #### Criar
 ```bash
 http POST 'http://127.0.0.1:8000/api/projects/' name='borg' packages:='[]' 
 ```
 
-Retorno com sucesso.
 ```json
 {
     "name": "borg",
     "packages": []
-}
-```
-
-Retorno com falha.
-```json
-{
-    "name": [
-        "project with this name already exists."
-    ]
 }
 ```
 
@@ -115,7 +106,6 @@ Retorno com falha.
 http POST 'http://127.0.0.1:8000/api/projects/' name='dinos' packages:='[{"Django": "3.2.5"}]' 
 ```
 
-Retorno com sucesso.
 ```json
 {
     "name": "dinos",
@@ -128,20 +118,11 @@ Retorno com sucesso.
 }
 ```
 
-Retorno com falha.
-```json
-{
-    "error": "One or more packages doesn't exist"
-}
-```
-
-
 #### Listar todos.
 ```bash
 http GET 'http://127.0.0.1:8000/api/projects/'
 ```
 
-Retorno com resultados.
 ```json
 [
     {
@@ -159,10 +140,6 @@ Retorno com resultados.
     }
 ]
 ```
-Retorno sem resultados.
-```json
-[]
-```
 
 >**Observações**
 >
@@ -174,48 +151,35 @@ Retorno sem resultados.
 ```bash
 http GET 'http://127.0.0.1:8000/api/projects/borg/'
 ```
-Retorno com sucesso.
+
 ```json
 {
     "name": "borg",
     "packages": []
 }
 ```
-Retorno com falha.
-```json
-{
-    "detail": "Not found."
-}
-```
+
 #### Atualizar um.
 ```bash
-http PUT 'http://127.0.0.1:8000/api/projects/borg/'
+http PUT 'http://127.0.0.1:8000/api/projects/borg/' packages:='[{"name": "pytest-mock", "version": "3.5.1"}]
 ```
-Retorno com sucesso.
+
 ```json
 {
     "name": "borg",
-    "packages": []
+    "packages": [
+        {
+            "name": "pytest-mock",
+            "version": "3.5.1"
+        }
+    ]
 }
 ```
-Retorno com falha.
-```json
-{
-    "detail": "Not found."
-}
-```
+
 #### Deletar um.
 ```bash
 http DELETE 'http://127.0.0.1:8000/api/projects/borg/'
 ```
-
-Retorno com sucesso.
-```json
-
-```
-Retorno com falha.
-```json
-{
-    "detail": "Not found."
-}
-```
+>**Observações**
+>
+> o método delete não retorna valor

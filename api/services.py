@@ -1,9 +1,10 @@
 from rest_framework import serializers
+from operator import itemgetter
 import requests
 import json
 
 
-class PackageRequest:
+class PackageFinder:
     def __init__(self, package, error_message):
         self.package = package
         self.error_message = error_message
@@ -37,27 +38,27 @@ class PackageInfo:
         return context
 
 
-class PackageValidate:
+class PackageValidator:
     def __init__(
         self,
         packages,
-        PackageRequest,
+        PackageFinder,
         PackageInfo,
         error_message,
     ):
         self.packages = list(packages)
-        self.package_request = PackageRequest
+        self.package_finder = PackageFinder
         self.package_info = PackageInfo
         self.error_message = error_message
 
     def validate(self):
         packages = []
         for package in self.packages:
-            package_request = self.package_request(
+            package_finder = self.package_finder(
                 package,
                 self.error_message,
             )
-            response = package_request.get()
+            response = package_finder.get()
             release = package.get("version")
 
             package_info = self.package_info(
@@ -68,3 +69,23 @@ class PackageValidate:
             info = package_info.get()
             packages.append(info)
         return packages
+
+
+class PackageUpdater:
+    def __init__(self, current_list, received_list):
+        self.current_list = sorted(current_list, key=itemgetter("name"))
+        self.received_list = sorted(received_list, key=itemgetter("name"))
+
+    def update(self):
+        if not self.current_list:
+            return self.received_list
+        current_names = [package["name"] for package in self.current_list]
+        for package in self.received_list:
+            if package["name"] in current_names:
+                self.current_list = [
+                    item
+                    for item in self.current_list
+                    if item["name"] != package["name"]
+                ]
+            self.current_list.append(package)
+        return sorted(self.current_list, key=itemgetter("name"))

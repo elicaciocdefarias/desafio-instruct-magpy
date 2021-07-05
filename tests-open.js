@@ -149,4 +149,41 @@ export default () => {
       },
     });
   });
+  group("Atualiza projeto", () => {
+    session.delete("/projects/vikings/");
+
+    const vikings = {
+      name: "vikings",
+      packages: []
+    };
+
+    const vikings_with_packages = {
+      name: "vikings",
+      packages: [
+        { name: "pytest-mock", version: "3.6.1" }
+      ]
+    };
+
+    session.post("/projects/", JSON.stringify(vikings));
+    const updated_vikings = session.put("/projects/vikings/", JSON.stringify(vikings_with_packages));
+
+    check(updated_vikings, {
+      "Atualiza projeto com sucesso": (r) => r.status === 200,
+    });
+
+    check(updated_vikings, {
+      "Lista de pacotes não está vazia": (r) => {
+        const data = responseToJson(r);
+        return data.packages.length === 1;
+      },
+    });
+
+    check(updated_vikings, {
+      "O pacote pytest-mock usa a versão 3.6.1": (r) => {
+        const data = responseToJson(r);
+        const pytestMock = data.packages.find((p) => p.name === "pytest-mock");
+        return pytestMock.version === "3.6.1";
+      }
+    });
+  });
 };
